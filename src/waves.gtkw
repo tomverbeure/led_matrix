@@ -1,0 +1,33 @@
+[*]
+[*] GTKWave Analyzer v3.3.90 (w)1999-2018 BSI
+[*] Tue Sep 24 05:17:57 2019
+[*]
+[dumpfile] "/home/tom/projects/led_matrix0/src/waves.vcd"
+[dumpfile_mtime] "Tue Sep 24 05:16:15 2019"
+[dumpfile_size] 68764
+[savefile] "/home/tom/projects/led_matrix0/src/waves.gtkw"
+[timestart] 0
+[size] 1392 600
+[pos] -1410 -925
+*-7.000000 45 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] tb.
+[sst_width] 225
+[signals_width] 243
+[sst_expanded] 1
+[sst_vpaned_height] 160
+@28
+tb.clk
+tb.led
+@24
+tb.u_top.cur_state[2:0]
+tb.u_top.led_cntr[7:0]
+tb.u_top.bit_cntr[5:0]
+tb.u_top.t_cntr[11:0]
+@200
+-
+@23
+tb.u_top.led_val[23:0]
+@22
+tb.u_top.led_shift[23:0]
+[pattern_trace] 1
+[pattern_trace] 0
