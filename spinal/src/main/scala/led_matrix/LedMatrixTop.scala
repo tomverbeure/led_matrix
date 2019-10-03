@@ -8,15 +8,17 @@ import scala.util.Random
 
 class LedMatrixTop extends Component {
     val io = new Bundle {
-        val led_r   = out(Bool)
-        val led_g   = out(Bool)
-        val led_b   = out(Bool)
+        val LED_R_   = out(Bool)
+        val LED_G_   = out(Bool)
+        val LED_B_   = out(Bool)
     }
 
+    noIoPrefix()
+
     val leds = new Area {
-        io.led_r := False
-        io.led_g := False
-        io.led_b := True
+        io.LED_R_ := True
+        io.LED_G_ := False
+        io.LED_B_ := True
     }
 }
 
