@@ -4,7 +4,7 @@ package ice40
 import spinal.core._
 
 class SB_HFOSC(
-        clkhf_div         : Int = 0
+        clkhf_div         : String = "0b00"
     ) extends BlackBox {
 
     val generic = new Generic {

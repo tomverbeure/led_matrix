@@ -4,7 +4,7 @@ package led_matrix
 import spinal.core._
 import spinal.lib._
 
-import scala.util.Random
+import ice40._
 
 class LedMatrixTop extends Component {
     val io = new Bundle {
@@ -15,11 +15,67 @@ class LedMatrixTop extends Component {
 
     noIoPrefix()
 
+    val osc_clk_raw = Bool
+
+    val u_osc = new SB_HFOSC()
+    u_osc.io.CLKHFPU    <> True
+    u_osc.io.CLKHFEN    <> True
+    u_osc.io.CLKHF      <> osc_clk_raw
+
+    val oscClkRawDomain = ClockDomain(
+        clock = osc_clk_raw,
+        frequency = FixedFrequency(48 MHz),
+        config = ClockDomainConfig(
+                    resetKind = BOOT
+        )
+    )
+
+    //============================================================
+    // Create osc clock reset
+    //============================================================
+    val osc_reset_ = Bool
+
+    val osc_reset_gen = new ClockingArea(oscClkRawDomain) {
+        val reset_unbuffered_ = True
+
+        val reset_cntr = Reg(UInt(5 bits)) init(0)
+        when(reset_cntr =/= U(reset_cntr.range -> true)){
+            reset_cntr := reset_cntr + 1
+            reset_unbuffered_ := False
+        }
+
+        osc_reset_ := RegNext(reset_unbuffered_)
+    }
+
+
+    val osc_clk    = Bool
+    osc_clk       := osc_clk_raw
+
+    val oscClkDomain = ClockDomain(
+        clock = osc_clk,
+        reset = osc_reset_,
+        config = ClockDomainConfig(
+            resetKind = SYNC,
+            resetActiveLevel = LOW
+        )
+    )
+
+
+    val led_red = Bool
+
+    val core = new ClockingArea(oscClkDomain) {
+        val led_counter = Reg(UInt(24 bits))
+        led_counter := led_counter + 1
+        led_red := led_counter.msb
+    }
+
+
     val leds = new Area {
-        io.LED_R_ := True
-        io.LED_G_ := False
+        io.LED_R_ := ~led_red
+        io.LED_G_ := True
         io.LED_B_ := True
     }
+
 }
 
 
