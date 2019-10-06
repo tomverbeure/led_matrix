@@ -1,4 +1,6 @@
 
+all: syn
+
 #sim:
 #	sbt "test-only rt.PanoTester"
 
