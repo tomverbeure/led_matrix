@@ -17,14 +17,14 @@ class LedMatrixTop extends Component {
 
     val osc_clk_raw = Bool
 
-    val u_osc = new SB_HFOSC()
+    val u_osc = new SB_HFOSC(clkhf_div = "0b11")
     u_osc.io.CLKHFPU    <> True
     u_osc.io.CLKHFEN    <> True
     u_osc.io.CLKHF      <> osc_clk_raw
 
     val oscClkRawDomain = ClockDomain(
         clock = osc_clk_raw,
-        frequency = FixedFrequency(48 MHz),
+        frequency = FixedFrequency(6 MHz),
         config = ClockDomainConfig(
                     resetKind = BOOT
         )
@@ -67,13 +67,15 @@ class LedMatrixTop extends Component {
         val led_counter = Reg(UInt(24 bits))
         led_counter := led_counter + 1
         led_red := led_counter.msb
+
+        val u_cpu = new CpuTop()
     }
 
 
     val leds = new Area {
         io.LED_R_ := ~led_red
-        io.LED_G_ := True
-        io.LED_B_ := True
+        io.LED_G_ := ~core.u_cpu.io.led_green
+        io.LED_B_ := ~core.u_cpu.io.led_blue
     }
 
 }
