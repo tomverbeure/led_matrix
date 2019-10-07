@@ -1,3 +1,5 @@
 chip.bin
 chip.blif
 chip.txt
+chip.json
+chip.asc
