@@ -10,11 +10,10 @@ import spinal.lib.bus.simple._
 import scala.collection.mutable.ArrayBuffer
 import vexriscv.plugin.{NONE, _}
 import vexriscv.{VexRiscv, VexRiscvConfig, plugin}
-import vexriscv.demo._
 
 case class CpuComplexConfig(
                        onChipRamSize      : BigInt,
-                       onChipRamHexFile   : String,
+                       onChipRamBinFile   : String,
                        pipelineDBus       : Boolean,
                        pipelineMainBus    : Boolean,
                        pipelineApbBridge  : Boolean,
@@ -28,7 +27,7 @@ object CpuComplexConfig{
 
     def default =  CpuComplexConfig(
         onChipRamSize         = 4 kB,
-        onChipRamHexFile      = null,
+        onChipRamBinFile      = null,
         pipelineDBus          = true,
         pipelineMainBus       = true,
         pipelineApbBridge     = true,
@@ -136,7 +135,7 @@ case class CpuComplex(config : CpuComplexConfig) extends Component
 
     // Arbiter of the cpu dBus/iBus to drive the mainBus
     // Priority to dBus, !! cmd transactions can change on the fly !!
-    val mainBusArbiter = new MuraxMasterArbiter(pipelinedMemoryBusConfig)
+    val mainBusArbiter = new CCMasterArbiter(pipelinedMemoryBusConfig)
 
     //Instanciate the CPU
     val cpu = new VexRiscv(
@@ -165,9 +164,9 @@ case class CpuComplex(config : CpuComplexConfig) extends Component
 
     //****** MainBus slaves ********
     val mainBusMapping = ArrayBuffer[(PipelinedMemoryBus,SizeMapping)]()
-    val ram = new MuraxPipelinedMemoryBusRam(
+    val ram = new CCPipelinedMemoryBusRam(
         onChipRamSize = onChipRamSize,
-        onChipRamHexFile = onChipRamHexFile,
+        onChipRamBinFile = onChipRamBinFile,
         pipelinedMemoryBusConfig = pipelinedMemoryBusConfig
     )
 
@@ -186,7 +185,7 @@ case class CpuComplex(config : CpuComplexConfig) extends Component
     io.apb <> apbBridge.io.apb
 
     val mainBusDecoder = new Area {
-        val logic = new MuraxPipelinedMemoryBusDecoder(
+        val logic = new CCPipelinedMemoryBusDecoder(
             master = mainBusArbiter.io.masterBus,
             specification = mainBusMapping,
             pipelineMaster = pipelineMainBus

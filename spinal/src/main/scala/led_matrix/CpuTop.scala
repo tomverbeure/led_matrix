@@ -22,10 +22,10 @@ case class CpuTop() extends Component {
         val led_blue    = out(Bool)
     }
 
-    //val CpuConfig = CpuComplexConfig.default.copy(onChipRamHexFile = "sw.g1/progmem.hex")
-    val CpuConfig = CpuComplexConfig.default
+    val cpuConfig = CpuComplexConfig.default.copy(onChipRamBinFile = "../sw/progmem4k.bin")
+    //val cpuConfig = CpuComplexConfig.default
 
-    val u_cpu = CpuComplex(CpuConfig)
+    val u_cpu = CpuComplex(cpuConfig)
     u_cpu.io.externalInterrupt <> False
 
     val apbMapping = ArrayBuffer[(Apb3, SizeMapping)]()

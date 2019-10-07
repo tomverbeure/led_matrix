@@ -1,4 +1,4 @@
-chip.bin
+*.bin
 chip.blif
 chip.txt
 chip.json
