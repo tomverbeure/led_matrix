@@ -7,8 +7,6 @@ import spinal.lib.io._
 import spinal.lib.bus.amba3.apb._
 import spinal.lib.bus.misc.SizeMapping
 
-import vexriscv.demo.MuraxApb3Timer
-
 import scala.collection.mutable.ArrayBuffer
 import spinal.lib.com.uart._
 
@@ -34,7 +32,7 @@ case class CpuTop() extends Component {
     // Timer
     //============================================================
 
-    val u_timer = new MuraxApb3Timer()
+    val u_timer = new CCApb3Timer()
     u_timer.io.interrupt        <> u_cpu.io.timerInterrupt
     apbMapping += u_timer.io.apb -> (0x00000, 4 kB)
 
@@ -47,7 +45,7 @@ case class CpuTop() extends Component {
     //============================================================
 
     val u_led_ctrl = Apb3Gpio(3, withReadSync = true)
-    u_led_ctrl.io.gpio.write(0)             <> io.led_red
+    //u_led_ctrl.io.gpio.write(0)             <> io.led_red
     u_led_ctrl.io.gpio.write(1)             <> io.led_green
     u_led_ctrl.io.gpio.write(2)             <> io.led_blue
     u_led_ctrl.io.gpio.read(0)              := io.led_red
@@ -55,6 +53,21 @@ case class CpuTop() extends Component {
     u_led_ctrl.io.gpio.read(2)              := io.led_blue
 
     apbMapping += u_led_ctrl.io.apb -> (0x10000, 4 kB)
+
+    //============================================================
+    // LED memory
+    //============================================================
+
+    val u_led_mem = new LedMem()
+    u_led_mem.io.led_mem_rd       := True
+    u_led_mem.io.led_mem_rd_addr  := 0
+
+    io.led_red := u_led_mem.io.led_mem_rd_data.orR
+
+    val led_mem_apb = Apb3(LedMem.getApb3Config())
+    val led_mem_apb_regs = u_led_mem.driveFrom(Apb3SlaveFactory(led_mem_apb), 0x0)
+
+    apbMapping += led_mem_apb -> (0x20000, 16 kB)
 
     //============================================================
     // Local APB decoder

@@ -39,9 +39,14 @@ int main() {
     REG_WR(LED_DIR, 0xff);
 
     while(1){
-        REG_WR(LED_WRITE, 0xff);
+        REG_WR(LED_WRITE, 0x00);
+        REG_WR(LED_MEM, 0x01);
         wait(WAIT_CYCLES);
-        REG_WR(LED_WRITE, 0x0);
+        REG_WR(LED_MEM, 0x00);
+
+        REG_WR(LED_WRITE, 0x02);
+        wait(WAIT_CYCLES);
+        REG_WR(LED_WRITE, 0x04);
         wait(WAIT_CYCLES);
     }
 }

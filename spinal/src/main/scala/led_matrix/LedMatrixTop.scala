@@ -73,7 +73,7 @@ class LedMatrixTop extends Component {
 
 
     val leds = new Area {
-        io.LED_R_ := ~led_red
+        io.LED_R_ := ~core.u_cpu.io.led_red
         io.LED_G_ := ~core.u_cpu.io.led_green
         io.LED_B_ := ~core.u_cpu.io.led_blue
     }
@@ -84,7 +84,9 @@ class LedMatrixTop extends Component {
 //Generate the MyTopLevel's Verilog
 object LedMatrixTopVerilog {
     def main(args: Array[String]) {
-        SpinalVerilog(new LedMatrixTop)
+        
+        val config = SpinalConfig(anonymSignalUniqueness = true)
+        config.generateVerilog(new LedMatrixTop)
     }
 }
 
