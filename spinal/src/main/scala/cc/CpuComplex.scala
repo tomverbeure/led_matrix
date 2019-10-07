@@ -46,7 +46,28 @@ object CpuComplexConfig{
                 catchAccessFault = false,
                 earlyInjection = false
             ),
-            new CsrPlugin(CsrPluginConfig.smallest(mtvecInit = 0x00000020l)),
+            new CsrPlugin(
+                    CsrPluginConfig(
+                        catchIllegalAccess      = false,
+                        mvendorid               = null,
+                        marchid                 = null,
+                        mimpid                  = null,
+                        mhartid                 = null,
+                        misaExtensionsInit      = 0,
+                        misaAccess              = CsrAccess.NONE,
+                        mtvecAccess             = CsrAccess.NONE,
+                        mtvecInit               = 0x00000020l,
+                        mepcAccess              = CsrAccess.NONE,
+                        mscratchGen             = false,
+                        mcauseAccess            = CsrAccess.NONE,
+                        mbadaddrAccess          = CsrAccess.NONE,
+                        mcycleAccess            = CsrAccess.READ_WRITE,
+                        minstretAccess          = CsrAccess.NONE,
+                        ecallGen                = false,
+                        wfiGenAsWait            = false,
+                        ucycleAccess            = CsrAccess.NONE
+                    )
+                ),
             new DecoderSimplePlugin(
                 catchIllegalInstruction = false
             ),
