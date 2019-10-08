@@ -1,5 +1,5 @@
 
-NEXTPNR_PARAMS = --up5k --package sg48 --json chip.json --pcf upduino_v2.pcf --asc chip.syn.asc --freq 6
+NEXTPNR_PARAMS = --up5k --package sg48 --json chip.json --pcf upduino_v2.pcf --asc chip.syn.asc --freq 12
 
 HEX2BIN = ../misc/hex2bin.py
 

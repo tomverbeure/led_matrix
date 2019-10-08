@@ -8,6 +8,8 @@ import ice40._
 
 class LedMatrixTop extends Component {
     val io = new Bundle {
+        val OSC_CLK_IN  = in(Bool)
+
         val LED_R_   = out(Bool)
         val LED_G_   = out(Bool)
         val LED_B_   = out(Bool)
@@ -15,16 +17,18 @@ class LedMatrixTop extends Component {
 
     noIoPrefix()
 
+/*
     val osc_clk_raw = Bool
 
-    val u_osc = new SB_HFOSC(clkhf_div = "0b11")
+    val u_osc = new SB_HFOSC(clkhf_div = "0b10")
     u_osc.io.CLKHFPU    <> True
     u_osc.io.CLKHFEN    <> True
     u_osc.io.CLKHF      <> osc_clk_raw
+*/
 
     val oscClkRawDomain = ClockDomain(
-        clock = osc_clk_raw,
-        frequency = FixedFrequency(6 MHz),
+        clock = io.OSC_CLK_IN,
+        frequency = FixedFrequency(12 MHz),
         config = ClockDomainConfig(
                     resetKind = BOOT
         )
@@ -49,7 +53,7 @@ class LedMatrixTop extends Component {
 
 
     val osc_clk    = Bool
-    osc_clk       := osc_clk_raw
+    osc_clk       := io.OSC_CLK_IN
 
     val oscClkDomain = ClockDomain(
         clock = osc_clk,
