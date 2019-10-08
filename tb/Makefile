@@ -37,6 +37,8 @@ LedMatrixTop.v_toplevel_core_u_cpu_u_cpu_ram_ram_symbol2.hex: ../sw/progmem.bin
 LedMatrixTop.v_toplevel_core_u_cpu_u_cpu_ram_ram_symbol3.hex: ../sw/progmem.bin
 	$(CREATE_MIF) -f hex -d 1024 -w 8 -o 3 -i 4 $< > $@
 
+waves:
+	gtkwave waves.vcd waves.gtkw &
 
 clean:
 	\rm -f *.bin *.hex tb *.vcd
