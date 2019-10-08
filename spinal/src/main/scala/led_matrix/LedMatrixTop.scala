@@ -68,16 +68,23 @@ class LedMatrixTop extends Component {
     val led_red = Bool
 
     val core = new ClockingArea(oscClkDomain) {
+
         val led_counter = Reg(UInt(24 bits))
         led_counter := led_counter + 1
-        led_red := led_counter.msb
+        //led_red := led_counter.msb
 
         val u_cpu = new CpuTop()
+
+
+        u_cpu.io.led_mem_rd       := True
+        u_cpu.io.led_mem_rd_addr  := 0
+
+        led_red := u_cpu.io.led_mem_rd_data.orR
     }
 
 
     val leds = new Area {
-        io.LED_R_ := ~core.u_cpu.io.led_red
+        io.LED_R_ := ~led_red
         io.LED_G_ := ~core.u_cpu.io.led_green
         io.LED_B_ := ~core.u_cpu.io.led_blue
     }

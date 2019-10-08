@@ -18,6 +18,10 @@ case class CpuTop() extends Component {
         val led_red     = out(Bool)
         val led_green   = out(Bool)
         val led_blue    = out(Bool)
+
+        val led_mem_rd      = in(Bool)
+        val led_mem_rd_addr = in(UInt(9 bits))
+        val led_mem_rd_data = out(Bits(24 bits))
     }
 
     val cpuConfig = CpuComplexConfig.default.copy(onChipRamBinFile = "../sw/progmem4k.bin")
@@ -45,7 +49,7 @@ case class CpuTop() extends Component {
     //============================================================
 
     val u_led_ctrl = Apb3Gpio(3, withReadSync = true)
-    //u_led_ctrl.io.gpio.write(0)             <> io.led_red
+    u_led_ctrl.io.gpio.write(0)             <> io.led_red
     u_led_ctrl.io.gpio.write(1)             <> io.led_green
     u_led_ctrl.io.gpio.write(2)             <> io.led_blue
     u_led_ctrl.io.gpio.read(0)              := io.led_red
@@ -59,10 +63,9 @@ case class CpuTop() extends Component {
     //============================================================
 
     val u_led_mem = new LedMem()
-    u_led_mem.io.led_mem_rd       := True
-    u_led_mem.io.led_mem_rd_addr  := 0
-
-    io.led_red := u_led_mem.io.led_mem_rd_data.orR
+    u_led_mem.io.led_mem_rd         <> io.led_mem_rd
+    u_led_mem.io.led_mem_rd_addr    <> io.led_mem_rd_addr
+    u_led_mem.io.led_mem_rd_data    <> io.led_mem_rd_data
 
     val led_mem_apb = Apb3(LedMem.getApb3Config())
     val led_mem_apb_regs = u_led_mem.driveFrom(Apb3SlaveFactory(led_mem_apb), 0x0)

@@ -32,7 +32,7 @@ void wait(int cycles)
 }
 
 
-#define WAIT_CYCLES 2000000
+#define WAIT_CYCLES 4000000
 
 int main() {
 
@@ -49,4 +49,6 @@ int main() {
         REG_WR(LED_WRITE, 0x04);
         wait(WAIT_CYCLES);
     }
+
+    while(1);
 }
