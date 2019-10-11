@@ -10,6 +10,8 @@ class LedMatrixTop extends Component {
     val io = new Bundle {
         val OSC_CLK_IN  = in(Bool)
 
+        val MATRIX_DIN  = out(Bool)
+
         val LED_R_   = out(Bool)
         val LED_G_   = out(Bool)
         val LED_B_   = out(Bool)
@@ -71,7 +73,9 @@ class LedMatrixTop extends Component {
 
         val led_counter = Reg(UInt(24 bits))
         led_counter := led_counter + 1
+
         //led_red := led_counter.msb
+        io.MATRIX_DIN := led_counter.msb
 
         val u_cpu = new CpuTop()
 
