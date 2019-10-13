@@ -75,23 +75,31 @@ class LedMatrixTop extends Component {
         led_counter := led_counter + 1
 
         //led_red := led_counter.msb
-        io.MATRIX_DIN := led_counter.msb
 
         val u_cpu = new CpuTop()
-
 
         u_cpu.io.led_mem_rd       := True
         u_cpu.io.led_mem_rd_addr  := 0
 
         led_red := u_cpu.io.led_mem_rd_data.orR
-    }
+
+        val led_stream = Stream(Bits(24 bits))
+
+        val u_matrix_driver = new WS2812Drv()
+        u_matrix_driver.io.led_din      <> io.MATRIX_DIN
+        u_matrix_driver.io.led_stream   <> led_stream
 
 
-    val leds = new Area {
-        io.LED_R_ := ~led_red
-        io.LED_G_ := ~core.u_cpu.io.led_green
-        io.LED_B_ := ~core.u_cpu.io.led_blue
-    }
+        val u_led_streamer = new LedStreamer()
+        u_led_streamer.io.led_stream    <> led_stream
+        }
+
+
+        val leds = new Area {
+            io.LED_R_ := ~led_red
+            io.LED_G_ := ~core.u_cpu.io.led_green
+            io.LED_B_ := ~core.u_cpu.io.led_blue
+        }
 
 }
 
@@ -99,7 +107,7 @@ class LedMatrixTop extends Component {
 //Generate the MyTopLevel's Verilog
 object LedMatrixTopVerilog {
     def main(args: Array[String]) {
-        
+
         val config = SpinalConfig(anonymSignalUniqueness = true)
         config.generateVerilog(new LedMatrixTop)
     }

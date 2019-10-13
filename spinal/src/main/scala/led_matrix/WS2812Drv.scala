@@ -19,10 +19,10 @@ class WS2812Drv extends Component {
     def reset_ns      = 50000
 
     def led_t0l_cyc   = led_t0l_ns * osc_clk_mhz / 1000
-    def led_t0h_cyc   = led_t0l_ns * osc_clk_mhz / 1000
+    def led_t0h_cyc   = led_t0h_ns * osc_clk_mhz / 1000
 
     def led_t1l_cyc   = led_t1l_ns * osc_clk_mhz / 1000
-    def led_t1h_cyc   = led_t1l_ns * osc_clk_mhz / 1000
+    def led_t1h_cyc   = led_t1h_ns * osc_clk_mhz / 1000
 
     def reset_cyc     = reset_ns * osc_clk_mhz / 1000
 
@@ -43,27 +43,30 @@ class WS2812Drv extends Component {
 
     val cur_state = Reg(FsmState()) init(FsmState.Idle)
 
-    val led_cntr  = Reg(UInt(8 bits))
     val bit_cntr  = Reg(UInt(6 bits))
     val t_cntr    = Reg(UInt(13 bits))
     val led_shift = Reg(Bits(24 bits))
 
+    io.led_stream.ready   := False
+    io.led_din            := False
+
     switch(cur_state){
         is(FsmState.Idle){
-            io.led_din   := False
-
             when(io.led_stream.valid){
                 cur_state := FsmState.LoadLedVal
             }
         }
 
         is(FsmState.LoadLedVal){
-            io.led_stream.ready   := True
-
-            led_shift := io.led_stream.payload
-            bit_cntr  := 23
-            t_cntr    := 0
-            cur_state := FsmState.ShiftLedTh
+            when(io.led_stream.valid){
+                led_shift := io.led_stream.payload
+                bit_cntr  := 23
+                t_cntr    := 0
+                cur_state := FsmState.ShiftLedTh
+            }
+            .otherwise{
+                cur_state   := FsmState.LedReset
+            }
         }
 
         is(FsmState.ShiftLedTh){
@@ -86,16 +89,12 @@ class WS2812Drv extends Component {
                 when(bit_cntr =/= 0) {
                     bit_cntr    := bit_cntr -1
                     led_shift   := led_shift(22 downto 0) ## False
-                }
-                .elsewhen(io.led_stream.valid){
-                    cur_state := FsmState.LoadLedVal
+                    cur_state   := FsmState.ShiftLedTh
                 }
                 .otherwise{
-                    t_cntr      := 0
-                    cur_state   := FsmState.LedReset
+                    io.led_stream.ready   := True
+                    cur_state             := FsmState.LoadLedVal
                 }
-
-                cur_state := FsmState.ShiftLedTl
             }
         }
 
