@@ -10,7 +10,7 @@ ROM_FILES = LedMatrixTop.v_toplevel_core_u_cpu_u_cpu_ram_ram_symbol0.bin \
 all: tb $(ROM_FILES)
 	./tb
 
-tb: tb.v ../spinal/LedMatrixTop.v
+tb: tb.v ../spinal/LedMatrixTop.sim.v
 	iverilog $^ -o $@
 
 LedMatrixTop.v_toplevel_core_u_cpu_u_cpu_ram_ram_symbol0.bin: LedMatrixTop.v_toplevel_core_u_cpu_u_cpu_ram_ram_symbol0.hex

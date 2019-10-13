@@ -6,7 +6,7 @@ import spinal.lib._
 
 import ice40._
 
-class LedMatrixTop extends Component {
+class LedMatrixTop(internalOsc : Boolean = true) extends Component {
     val io = new Bundle {
         val OSC_CLK_IN  = in(Bool)
 
@@ -19,17 +19,20 @@ class LedMatrixTop extends Component {
 
     noIoPrefix()
 
-/*
-    val osc_clk_raw = Bool
+    val osc_clk = Bool
 
-    val u_osc = new SB_HFOSC(clkhf_div = "0b10")
-    u_osc.io.CLKHFPU    <> True
-    u_osc.io.CLKHFEN    <> True
-    u_osc.io.CLKHF      <> osc_clk_raw
-*/
+    val osc_src = if (internalOsc) new Area {
+        val u_osc = new SB_HFOSC(clkhf_div = "0b10")
+        u_osc.io.CLKHFPU    <> True
+        u_osc.io.CLKHFEN    <> True
+        u_osc.io.CLKHF      <> osc_clk
+    }
+    else new Area {
+        osc_clk := io.OSC_CLK_IN
+    }
 
     val oscClkRawDomain = ClockDomain(
-        clock = io.OSC_CLK_IN,
+        clock = osc_clk,
         frequency = FixedFrequency(12 MHz),
         config = ClockDomainConfig(
                     resetKind = BOOT
@@ -53,9 +56,6 @@ class LedMatrixTop extends Component {
         osc_reset_ := RegNext(reset_unbuffered_)
     }
 
-
-    val osc_clk    = Bool
-    osc_clk       := io.OSC_CLK_IN
 
     val oscClkDomain = ClockDomain(
         clock = osc_clk,
@@ -105,11 +105,19 @@ class LedMatrixTop extends Component {
 
 
 //Generate the MyTopLevel's Verilog
-object LedMatrixTopVerilog {
+object LedMatrixTopVerilogSim {
     def main(args: Array[String]) {
 
         val config = SpinalConfig(anonymSignalUniqueness = true)
-        config.generateVerilog(new LedMatrixTop)
+        config.generateVerilog(new LedMatrixTop(internalOsc = false))
+    }
+}
+
+object LedMatrixTopVerilogSyn {
+    def main(args: Array[String]) {
+
+        val config = SpinalConfig(anonymSignalUniqueness = true)
+        config.generateVerilog(new LedMatrixTop(internalOsc = true))
     }
 }
 

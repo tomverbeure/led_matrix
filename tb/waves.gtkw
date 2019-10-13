@@ -1,13 +1,15 @@
 [*]
 [*] GTKWave Analyzer v3.3.90 (w)1999-2018 BSI
-[*] Tue Oct  8 06:37:45 2019
+[*] Sun Oct 13 22:57:01 2019
 [*]
-[dumpfile] "(null)"
+[dumpfile] "/home/tom/projects/led_matrix/tb/waves.vcd"
+[dumpfile_mtime] "Sun Oct 13 22:56:50 2019"
+[dumpfile_size] 27656501
 [savefile] "/home/tom/projects/led_matrix/tb/waves.gtkw"
-[timestart] 205
+[timestart] 5300
 [size] 2374 1013
-[pos] -458 -188
-*-5.000000 383 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[pos] -1 -1
+*-10.239491 1764 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] tb.
 [treeopen] tb.u_dut.
 [treeopen] tb.u_dut.core_u_cpu.
@@ -17,12 +19,30 @@
 [sst_vpaned_height] 305
 @22
 tb.u_dut.core_u_cpu.u_cpu.cpu_iBus_cmd_payload_pc[31:0]
-@201
+@200
 -
 @28
 tb.u_dut.OSC_CLK_IN
 tb.u_dut.LED_B_
 tb.u_dut.LED_G_
 tb.u_dut.LED_R_
+@200
+-
+@820
+tb.u_dut.core_u_matrix_driver.cur_state_string[79:0]
+@200
+-
+@28
+tb.u_dut.core_u_led_streamer.io_led_stream_valid
+tb.u_dut.core_u_led_streamer.io_led_stream_ready
+@22
+tb.u_dut.core_u_led_streamer.io_led_stream_payload[23:0]
+@24
+tb.u_dut.core_u_matrix_driver.bit_cntr[5:0]
+tb.u_dut.core_u_matrix_driver.t_cntr[12:0]
+@200
+-
+@28
+tb.u_dut.core_u_matrix_driver.io_led_din
 [pattern_trace] 1
 [pattern_trace] 0

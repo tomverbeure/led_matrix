@@ -68,7 +68,7 @@ chip.asc: chip.syn.asc $(ROM_FILES)
 chip.syn.asc: chip.json upduino_v2.pcf
 	nextpnr-ice40 $(NEXTPNR_PARAMS)
 
-chip.json: ../spinal/LedMatrixTop.v $(ROM_FILES_SYN)
+chip.json: ../spinal/LedMatrixTop.syn.v $(ROM_FILES_SYN)
 	yosys -q -p "synth_ice40 -json $@" $<
 
 .PHONY: flash
