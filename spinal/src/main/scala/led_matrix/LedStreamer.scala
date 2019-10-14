@@ -35,16 +35,16 @@ class LedStreamer extends Component {
 
     val cur_state = Reg(FsmState()) init(FsmState.Idle)
 
-    val led_cntr  = Reg(UInt(8 bits))
+    val led_cntr  = Reg(UInt(9 bits))
 
-    val led_mem_addr  = Reg(UInt(6 bits))
+    val led_mem_addr  = Reg(UInt(9 bits))
     val led_val       = Reg(Bits(24 bits))
 
     io.led_stream.valid   := False
     io.led_stream.payload := led_val
 
     io.led_mem_rd         := False
-    io.led_mem_rd_addr    := led_mem_addr.resize(9)
+    io.led_mem_rd_addr    := led_mem_addr.resize(io.led_mem_rd_addr.getWidth)
 
     io.active             := True
 
@@ -53,7 +53,7 @@ class LedStreamer extends Component {
             io.led_stream.valid   := False
             io.active             := False
 
-            led_cntr              := 63
+            led_cntr              := 383
             led_mem_addr          := 0
 
             when(io.start && !RegNext(io.start)){

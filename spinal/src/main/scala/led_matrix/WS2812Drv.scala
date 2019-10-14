@@ -43,7 +43,7 @@ class WS2812Drv extends Component {
 
     val cur_state = Reg(FsmState()) init(FsmState.Idle)
 
-    val bit_cntr  = Reg(UInt(6 bits))
+    val bit_cntr  = Reg(UInt(5 bits))
     val t_cntr    = Reg(UInt(13 bits))
     val led_shift = Reg(Bits(24 bits))
 
