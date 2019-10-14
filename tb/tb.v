@@ -11,14 +11,14 @@ module tb;
 
         clk = 0;
 
-        repeat(10000)
+        repeat(40000)
             @(posedge clk);
 
         $finish;
     end
 
     always
-        #4 clk = !clk;
+        #40 clk = !clk;
 
 
     wire led_r_, led_g_, led_b;

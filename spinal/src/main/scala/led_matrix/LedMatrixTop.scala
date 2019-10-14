@@ -3,6 +3,8 @@ package led_matrix
 
 import spinal.core._
 import spinal.lib._
+import spinal.lib.bus.misc._
+import spinal.lib.bus.amba3.apb._
 
 import ice40._
 
@@ -66,7 +68,6 @@ class LedMatrixTop(internalOsc : Boolean = true) extends Component {
         )
     )
 
-
     val led_red = Bool
 
     val core = new ClockingArea(oscClkDomain) {
@@ -74,14 +75,9 @@ class LedMatrixTop(internalOsc : Boolean = true) extends Component {
         val led_counter = Reg(UInt(24 bits))
         led_counter := led_counter + 1
 
-        //led_red := led_counter.msb
+        led_red := led_counter.msb
 
         val u_cpu = new CpuTop()
-
-        u_cpu.io.led_mem_rd       := True
-        u_cpu.io.led_mem_rd_addr  := 0
-
-        led_red := u_cpu.io.led_mem_rd_data.orR
 
         val led_stream = Stream(Bits(24 bits))
 
@@ -91,15 +87,20 @@ class LedMatrixTop(internalOsc : Boolean = true) extends Component {
 
 
         val u_led_streamer = new LedStreamer()
-        u_led_streamer.io.led_stream    <> led_stream
-        }
+        u_led_streamer.io.led_stream      <> led_stream
+        u_led_streamer.io.led_mem_rd      <> u_cpu.io.led_mem_rd
+        u_led_streamer.io.led_mem_rd_addr <> u_cpu.io.led_mem_rd_addr
+        u_led_streamer.io.led_mem_rd_data <> u_cpu.io.led_mem_rd_data
+
+        val led_streamer_apb_regs = u_led_streamer.driveFrom(Apb3SlaveFactory(u_cpu.io.led_streamer_apb), 0x0)
+    }
 
 
-        val leds = new Area {
-            io.LED_R_ := ~led_red
-            io.LED_G_ := ~core.u_cpu.io.led_green
-            io.LED_B_ := ~core.u_cpu.io.led_blue
-        }
+    val leds = new Area {
+        io.LED_R_ := ~led_red
+        io.LED_G_ := ~core.u_cpu.io.led_green
+        io.LED_B_ := ~core.u_cpu.io.led_blue
+    }
 
 }
 

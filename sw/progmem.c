@@ -38,7 +38,13 @@ int main() {
 
     REG_WR(LED_DIR, 0xff);
 
-    while(1){
+    for(int i=0;i<64;++i){
+        MEM_WR(LED_MEM, i, i);
+    }
+
+    REG_WR(LED_STREAMER_CONFIG, 1);
+
+    while(0){
         REG_WR(LED_WRITE, 0x00);
         REG_WR(LED_MEM, 0x01);
         wait(WAIT_CYCLES);

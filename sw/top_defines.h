@@ -6,3 +6,6 @@
 #define	LED_DIR_ADDR                0x00010008
 
 #define LED_MEM_ADDR                0x00020000
+
+#define LED_STREAMER_CONFIG_ADDR    0x00030000
+

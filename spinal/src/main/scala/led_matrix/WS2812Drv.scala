@@ -58,6 +58,7 @@ class WS2812Drv extends Component {
         }
 
         is(FsmState.LoadLedVal){
+
             when(io.led_stream.valid){
                 led_shift := io.led_stream.payload
                 bit_cntr  := 23
