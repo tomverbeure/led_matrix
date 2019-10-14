@@ -16,7 +16,7 @@ class WS2812Drv extends Component {
     def led_t1l_ns    = 450
     def led_t1h_ns    = 800
 
-    def reset_ns      = 50000
+    def reset_ns      = 280000
 
     def led_t0l_cyc   = led_t0l_ns * osc_clk_mhz / 1000
     def led_t0h_cyc   = led_t0h_ns * osc_clk_mhz / 1000

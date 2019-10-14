@@ -49,7 +49,7 @@ int main() {
         REG_WR(LED_STREAMER_CONFIG, 0);
 
         for(int i=0;i<64;++i){
-            MEM_WR(LED_MEM, i, (i + (cntr>>7)) & 0x3f);
+            MEM_WR(LED_MEM, i, (i + (cntr>>5)) & 0x3f);
         }
 
         while(REG_RD(LED_STREAMER_STATUS) == 1)
