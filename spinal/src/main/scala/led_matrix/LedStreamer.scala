@@ -13,7 +13,8 @@ object LedStreamer {
 class LedStreamer extends Component {
 
     val io = new Bundle {
-        val enable            = in(Bool)
+        val start             = in(Bool)
+        val active            = out(Bool)
 
         val led_stream        = master(Stream(Bits(24 bits)))
 
@@ -45,14 +46,17 @@ class LedStreamer extends Component {
     io.led_mem_rd         := False
     io.led_mem_rd_addr    := led_mem_addr.resize(9)
 
+    io.active             := True
+
     switch(cur_state){
         is(FsmState.Idle){
             io.led_stream.valid   := False
+            io.active             := False
 
             led_cntr              := 63
             led_mem_addr          := 0
 
-            when(io.enable){
+            when(io.start && !RegNext(io.start)){
                 cur_state         := FsmState.FetchLedVal
             }
         }
@@ -91,9 +95,11 @@ class LedStreamer extends Component {
     }
 
     def driveFrom(busCtrl: BusSlaveFactory, baseAddress: BigInt) = new Area {
-        val enable = busCtrl.createReadAndWrite(io.enable, 0x0) init(False)
+        val start = busCtrl.createReadAndWrite(io.start, 0x0) init(False)
+        val active = busCtrl.createReadOnly(io.active, 0x4)
 
-        io.enable := enable
+        io.start := start
+        active := io.active
     }
 
 }

@@ -42,7 +42,21 @@ int main() {
         MEM_WR(LED_MEM, i, i);
     }
 
-    REG_WR(LED_STREAMER_CONFIG, 1);
+    int cntr = 0;
+
+    while(1){
+        REG_WR(LED_STREAMER_CONFIG, 1);
+        REG_WR(LED_STREAMER_CONFIG, 0);
+
+        for(int i=0;i<64;++i){
+            MEM_WR(LED_MEM, i, (i + (cntr>>7)) & 0x3f);
+        }
+
+        while(REG_RD(LED_STREAMER_STATUS) == 1)
+            ;
+
+        cntr += 1;
+    }
 
     while(0){
         REG_WR(LED_WRITE, 0x00);
